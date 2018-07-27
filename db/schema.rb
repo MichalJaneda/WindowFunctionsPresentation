@@ -36,9 +36,9 @@ ActiveRecord::Schema.define(version: 20180727205027) do
     t.string "payment_currency", default: "EUR", null: false
     t.integer "bonus_cents", default: 0, null: false
     t.string "bonus_currency", default: "EUR", null: false
-    t.bigint "positions_id"
+    t.bigint "position_id"
     t.index ["employee_id"], name: "index_paychecks_on_employee_id"
-    t.index ["positions_id"], name: "index_paychecks_on_positions_id"
+    t.index ["position_id"], name: "index_paychecks_on_position_id"
     t.index ["year", "month", "employee_id"], name: "index_paychecks_on_year_and_month_and_employee_id", unique: true
   end
 
@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 20180727205027) do
 
   add_foreign_key "employees", "employees", column: "leader_id"
   add_foreign_key "paychecks", "employees"
-  add_foreign_key "paychecks", "positions", column: "positions_id"
+  add_foreign_key "paychecks", "positions"
   add_foreign_key "products_product_types", "product_types"
   add_foreign_key "products_product_types", "products"
   add_foreign_key "products_sales", "products"
