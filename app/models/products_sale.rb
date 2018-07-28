@@ -1,2 +1,0 @@
-class ProductsSale < ApplicationRecord
-end
