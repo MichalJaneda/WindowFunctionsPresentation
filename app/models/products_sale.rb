@@ -1,4 +1,4 @@
-class ProductsSales < ApplicationRecord
+class ProductsSale < ApplicationRecord
   validates :amount,
             presence: true,
             numericality: { greater_than: 0 }

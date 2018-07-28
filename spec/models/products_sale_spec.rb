@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ProductsSales, type: :model do
+RSpec.describe ProductsSale, type: :model do
   subject { build(:products_sales) }
 
   describe 'validations' do
