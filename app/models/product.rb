@@ -9,5 +9,5 @@ class Product < ApplicationRecord
 
   has_many :products_sales
   has_many :sales, through: :products_sales
-  has_and_belongs_to_many :types, -> { uniq }, class_name: 'ProductType'.freeze
+  has_and_belongs_to_many :types, class_name: 'ProductType'.freeze
 end

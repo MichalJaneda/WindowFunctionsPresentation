@@ -8,5 +8,9 @@ FactoryBot.define do
     transient do
       discount_cents { 0 }
     end
+
+    trait :small_discount do
+      discount_cents { rand(1..1_000) }
+    end
   end
 end
