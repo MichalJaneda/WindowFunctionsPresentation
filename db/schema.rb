@@ -79,12 +79,12 @@ ActiveRecord::Schema.define(version: 20180727205027) do
   end
 
   create_table "sales", force: :cascade do |t|
-    t.bigint "employees_id"
     t.bigint "seller_id"
+    t.bigint "client_id"
     t.date "sold_on"
     t.integer "discount_cents", default: 0, null: false
     t.string "discount_currency", default: "EUR", null: false
-    t.index ["employees_id"], name: "index_sales_on_employees_id"
+    t.index ["client_id"], name: "index_sales_on_client_id"
     t.index ["seller_id"], name: "index_sales_on_seller_id"
     t.index ["sold_on"], name: "index_sales_on_sold_on"
   end
@@ -96,6 +96,6 @@ ActiveRecord::Schema.define(version: 20180727205027) do
   add_foreign_key "products_product_types", "products"
   add_foreign_key "products_sales", "products"
   add_foreign_key "products_sales", "sales"
-  add_foreign_key "sales", "employees", column: "employees_id"
+  add_foreign_key "sales", "clients"
   add_foreign_key "sales", "employees", column: "seller_id"
 end
