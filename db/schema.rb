@@ -50,6 +50,14 @@ ActiveRecord::Schema.define(version: 20180727205027) do
     t.string "name"
   end
 
+  create_table "product_types_products", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "product_type_id"
+    t.index ["product_id", "product_type_id"], name: "index_product_types_products_on_product_id_and_product_type_id", unique: true
+    t.index ["product_id"], name: "index_product_types_products_on_product_id"
+    t.index ["product_type_id"], name: "index_product_types_products_on_product_type_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.integer "price_net_cents", default: 0, null: false
@@ -59,14 +67,6 @@ ActiveRecord::Schema.define(version: 20180727205027) do
     t.integer "cost_of_production_cents", default: 0, null: false
     t.string "cost_of_production_currency", default: "EUR", null: false
     t.date "for_sale_since"
-  end
-
-  create_table "products_product_types", force: :cascade do |t|
-    t.bigint "product_id"
-    t.bigint "product_type_id"
-    t.index ["product_id", "product_type_id"], name: "index_products_product_types_on_product_id_and_product_type_id", unique: true
-    t.index ["product_id"], name: "index_products_product_types_on_product_id"
-    t.index ["product_type_id"], name: "index_products_product_types_on_product_type_id"
   end
 
   create_table "products_sales", force: :cascade do |t|
@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(version: 20180727205027) do
   add_foreign_key "employees", "employees", column: "leader_id"
   add_foreign_key "paychecks", "employees"
   add_foreign_key "paychecks", "positions"
-  add_foreign_key "products_product_types", "product_types"
-  add_foreign_key "products_product_types", "products"
+  add_foreign_key "product_types_products", "product_types"
+  add_foreign_key "product_types_products", "products"
   add_foreign_key "products_sales", "products"
   add_foreign_key "products_sales", "sales"
   add_foreign_key "sales", "clients"
