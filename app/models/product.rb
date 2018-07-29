@@ -5,6 +5,7 @@ class Product < ApplicationRecord
   validates :name, presence: true
 
   monetize :price_net_cents, numericality: { greater_than: 0 }
+  monetize :cost_of_production_cents, numericality: { greater_than: 0 }
   monetize :price_with_tax_cents, numericality: { greater_than: 0 }
 
   has_many :products_sales
