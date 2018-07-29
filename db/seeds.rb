@@ -1,13 +1,13 @@
 require 'factory_bot'
 
-CLIENTS = 15_000
-LEADERS = 20
-EMPLOYEES = 200
-POSITIONS = 15
-PRODUCTS_TYPES = 40
-PRODUCTS = 100
+CLIENTS = 10_000
+LEADERS = 15
+EMPLOYEES = 80
+POSITIONS = 5
+PRODUCTS_TYPES = 15
+PRODUCTS = 40
 SALES = (CLIENTS * 4.5).to_i
-PRODUCTS_PER_SALE = 1..15
+PRODUCTS_PER_SALE = 1..10
 
 clients = leaders = employees = positions = product_types = products = []
 
@@ -60,7 +60,7 @@ threads << Thread.new do
 end
 
 threads << Thread.new do
-  Sale.transaction do
+  ApplicationRecord.transaction do
     sales = Array.new(SALES) do
       employee = employees.sample
       sale = FactoryBot.create(:sale,
@@ -70,10 +70,10 @@ threads << Thread.new do
                                sold_on: rand(employee.joined_on..Date.today))
 
       sale_products = products.sample(rand(PRODUCTS_PER_SALE))
-      Array.new(sale_products) do
+      sale_products.each do |product_for_sale|
         FactoryBot.create(:products_sales,
                           sale: sale,
-                          product: products.sample)
+                          product: product_for_sale)
       end
 
       sale

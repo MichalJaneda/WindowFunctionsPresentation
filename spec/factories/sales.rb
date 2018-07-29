@@ -10,7 +10,7 @@ FactoryBot.define do
     end
 
     trait :small_discount do
-      discount_cents { rand(1..1_000) }
+      discount_cents { rand(0..4).zero? ? rand(1..1_000) : 0 }
     end
   end
 end
