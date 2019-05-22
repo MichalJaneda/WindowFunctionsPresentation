@@ -1,13 +1,13 @@
 require 'factory_bot'
 
-CLIENTS = 10_000
-LEADERS = 15
-EMPLOYEES = 80
-POSITIONS = 5
-PRODUCTS_TYPES = 15
-PRODUCTS = 40
+CLIENTS = 100_000
+LEADERS = 30
+EMPLOYEES = 120
+POSITIONS = 25
+PRODUCTS_TYPES = 25
+PRODUCTS = 60
 SALES = (CLIENTS * 4.5).to_i
-PRODUCTS_PER_SALE = 1..10
+PRODUCTS_PER_SALE = 1..100
 
 clients = leaders = employees = positions = product_types = products = []
 
