@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180727205027) do
+ActiveRecord::Schema.define(version: 20190522203247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,4 +98,18 @@ ActiveRecord::Schema.define(version: 20180727205027) do
   add_foreign_key "products_sales", "sales"
   add_foreign_key "sales", "clients"
   add_foreign_key "sales", "employees", column: "seller_id"
+
+  create_view "pays_current_prev_months", sql_definition: <<-SQL
+      SELECT e.id,
+      e.name,
+      make_date((p.year)::integer, (p.month)::integer, 10) AS pay_month,
+      (p.payment_cents / 10) AS current_month_pay,
+      lag((p.payment_cents / 10)) OVER per_employee AS prev_month_pay,
+      (p.bonus_cents / 10) AS current_month_bonus,
+      lag((p.bonus_cents / 10)) OVER per_employee AS prev_month_bonus
+     FROM (employees e
+       JOIN paychecks p ON ((e.id = p.employee_id)))
+    WINDOW per_employee AS (PARTITION BY p.employee_id ORDER BY p.year, p.month)
+    ORDER BY p.year, p.month;
+  SQL
 end
