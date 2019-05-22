@@ -3,5 +3,8 @@ Rails.application.routes.draw do
     namespace :payments do
       get :in_month
     end
+    namespace :bonus do
+      get :streak
+    end
   end
 end
