@@ -63,32 +63,3 @@ module Queries
     end
   end
 end
-
-# WITH months_without_bonuses AS (
-#    SELECT
-#      p.name,
-#      p.pay_month,
-#      LEAD(p.pay_month) OVER (PARTITION BY p.name ORDER BY pay_month) next_month_without_bonus
-#    FROM pays_current_prev_month p
-#    WHERE p.current_month_bonus = 0
-# )
-
-# WITH months_without_bonuses AS (
-#    SELECT
-#      p.name,
-#      p.pay_month,
-#      LEAD(p.pay_month) OVER (PARTITION BY p.name ORDER BY pay_month) next_month_without_bonus
-#    FROM pays_current_prev_month p
-#    WHERE p.current_month_bonus = 0
-# ), no_bonus_streak AS (
-#    SELECT
-#      *,
-#      EXTRACT(MONTH FROM AGE(m.next_month_without_bonus, m.pay_month)) streak
-#    FROM months_without_bonuses m
-# )
-# SELECT
-#  n.name,
-#  MAX(n.streak)
-# FROM no_bonus_streak n
-# GROUP BY n.name
-# ORDER BY MAX(n.streak) DESC;
