@@ -29,19 +29,19 @@ module Queries
 
         average_in_window = ::Arel::Nodes::NamedFunction.new('AVG',
                                                              [payments_per_month_cte_arel[:payment_in_month]])
-          .over(local_window)
+                                                        .over(local_window)
 
         ::Arel::Nodes::NamedFunction.new('ROUND',
                                          [average_in_window, 2])
-          .as('average_payment_around')
+                                    .as('average_payment_around')
       end
 
       def payed_from_beginning_of_year
         local_window = window.dup
 
         ::Arel::Nodes::NamedFunction.new('SUM', [payments_per_month_cte_arel[:payment_in_month]])
-          .over(local_window)
-          .as('payed_from_beginning_of_year')
+                                    .over(local_window)
+                                    .as('payed_from_beginning_of_year')
       end
 
       def payed_to_end_of_year
@@ -54,14 +54,14 @@ module Queries
 
         ::Arel::Nodes::NamedFunction.new('SUM',
                                          [payments_per_month_cte_arel[:payment_in_month]])
-          .over(local_window)
-          .as('payed_to_end_of_year')
+                                    .over(local_window)
+                                    .as('payed_to_end_of_year')
       end
 
       def window
         ::Arel::Nodes::Window.new
-          .order(window_order)
-          .partition(window_partition)
+                             .order(window_order)
+                             .partition(window_partition)
       end
 
       def window_order
@@ -82,12 +82,13 @@ module Queries
       def payments_per_month_cte
         payment_in_dollars_expr = ::Arel::Nodes::Division.new(
           ::Arel::Nodes::NamedFunction.new('SUM', [paychecks_arel[:payment_cents]]),
-          100)
+          100
+        )
 
         cte_body = paychecks_arel.project(paychecks_arel[:year],
                                           paychecks_arel[:month],
                                           payment_in_dollars_expr.as('payment_in_month'))
-          .group(paychecks_arel[:year], paychecks_arel[:month])
+                                 .group(paychecks_arel[:year], paychecks_arel[:month])
 
         ::Arel::Nodes::As.new(payments_per_month_cte_arel, cte_body)
       end
