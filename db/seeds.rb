@@ -1,6 +1,6 @@
 require 'factory_bot'
 
-CLIENTS = 100_000
+CLIENTS = 1_000 * 1_000
 LEADERS = 30
 EMPLOYEES = 120
 POSITIONS = 25
@@ -11,34 +11,22 @@ PRODUCTS_PER_SALE = 1..100
 
 clients = leaders = employees = positions = product_types = products = []
 
-Client.transaction do
-  clients = FactoryBot.create_list(:client, CLIENTS)
-end
+(CLIENTS / 1_000).times { FactoryBot.create_list(:client, 1_000) }
+min_client_id = Client.first.id
+max_client_id = Client.last.id
 
-Employee.transaction do
-  leaders = FactoryBot.create_list(:employee, LEADERS)
-end
+leaders = FactoryBot.create_list(:employee, LEADERS)
 
-Employee.transaction do
-  employees = Array.new(EMPLOYEES) { FactoryBot.create(:employee, leader: leaders.sample) }
-end
+employees = Array.new(EMPLOYEES).times { FactoryBot.create(:employee, leader: leaders.sample) }
 
-Position.transaction do
-  positions = FactoryBot.create_list(:position, POSITIONS)
-end
+positions = FactoryBot.create_list(:position, POSITIONS)
 
-ProductType.transaction do
-  product_types = FactoryBot.create_list(:product_type, PRODUCTS_TYPES)
-end
+product_types = FactoryBot.create_list(:product_type, PRODUCTS_TYPES)
 
-Product.transaction do
-  products = Array.new(PRODUCTS) do
-    FactoryBot.create(:product,
-                      products_types: product_types.sample(rand(1..10)) )
-  end
-end
+products = Array.new(PRODUCTS) { FactoryBot.create(:product, products_types: product_types.sample(rand(1..10)) ) }
 
 threads = []
+
 threads << Thread.new do
   Paycheck.transaction do
     paychecks = Employee.all.map do |employee|
@@ -65,7 +53,7 @@ threads << Thread.new do
       employee = employees.sample
       sale = FactoryBot.create(:sale,
                                :small_discount,
-                               client: clients.sample,
+                               client: rand(min_client_id..max_client_id),
                                seller: employee,
                                sold_on: rand(employee.joined_on..Date.today))
 
