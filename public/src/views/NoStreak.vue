@@ -1,5 +1,6 @@
 <template>
     <div class="table-wrapper">
+        <input v-model="search_query" placeholder="Search">
         <table>
             <thead>
             <tr>
@@ -8,7 +9,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="user_streak in users_streaks.data">
+            <tr v-for="user_streak in users_streaks.data"
+                v-bind:key="user_streak.id">
                 <td>
                     {{ user_streak.name }}
                 </td>
@@ -29,7 +31,8 @@ export default {
     data() {
         return {
             users_streaks: [],
-            order: null
+            order: null,
+            search_query: ''
         }
     },
     mounted () {
@@ -37,12 +40,15 @@ export default {
     },
     watch: {
         order: function (new_order) {
-            this.fetch(new_order)
+            this.fetch(new_order, this.search_query)
+        },
+        search_query: function (new_search) {
+            this.fetch(this.order, new_search)
         }
     },
     methods: {
-        fetch: function(order) {
-            get('http://localhost:3000/api/bonus/streak', { params: { order: order } })
+        fetch: function(order, search_query) {
+            get('http://localhost:3000/api/bonus/streak', { params: { order: order, search: search_query } })
                 .then(response => ( this.users_streaks = response.data ))
         },
         toggleOrder: function(field) {
@@ -70,8 +76,7 @@ table {
     width: 100%;
     border: 1px solid black;
 }
-
-    thead {
-        background-color: antiquewhite;
-    }
+thead {
+    background-color: antiquewhite;
+}
 </style>

@@ -7,6 +7,6 @@ class ApplicationController < ActionController::API
     headers['Access-Control-Request-Method'] = '*'
     headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept'
 
-    super(json: body)
+    super(json: { data: body })
   end
 end

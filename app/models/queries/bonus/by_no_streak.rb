@@ -2,21 +2,22 @@ module Queries
   module Bonus
     class ByNoStreak < ::Queries::Base
       def call(order: nil, where: nil)
-        ::Employee.from("(#{query.to_sql}) as #{::Employee.table_name}")
+        q = query
+        q.where(no_bonus_streak_cte_arel[:name].matches("%#{where}%")) if where.present?
+        ::Employee.from("(#{q.to_sql}) as #{::Employee.table_name}")
       end
 
       private
 
       def query
-        max_streak_per_user = ::Arel::Nodes::NamedFunction.new('AGE',
-                                                               no_bonus_streak_cte_arel[:streak])
+        max_streak_per_user = ::Arel::Nodes::NamedFunction.new('MAX',
+                                                               [no_bonus_streak_cte_arel[:streak]]).as('streak')
 
         no_bonus_streak_cte_arel.project(no_bonus_streak_cte_arel[:name],
-                                         no_bonus_streak_cte_arel[:streak])
+                                         max_streak_per_user)
                                 .with(months_without_bonuses_cte,
                                       no_bonus_streak_cte)
-                                .group(no_bonus_streak_cte_arel[:name],
-                                       no_bonus_streak_cte_arel[:streak])
+                                .group(no_bonus_streak_cte_arel[:name])
                                 .where(no_bonus_streak_cte_arel[:streak].not_eq(nil))
       end
 
