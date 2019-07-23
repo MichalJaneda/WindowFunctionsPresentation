@@ -1,5 +1,6 @@
 <template>
     <div class="table-wrapper">
+        <h3>{{ requestTime }}s</h3>
         <input v-model="search_query" placeholder="Search">
         <table>
             <thead>
@@ -32,7 +33,8 @@ export default {
         return {
             users_streaks: [],
             order: null,
-            search_query: ''
+            search_query: '',
+            requestTime: 0
         }
     },
     mounted () {
@@ -48,8 +50,12 @@ export default {
     },
     methods: {
         fetch: function(order, search_query) {
+            const requestStart = new Date()
             get('http://localhost:3000/api/bonus/streak', { params: { order: order, search: search_query } })
-                .then(response => ( this.users_streaks = response.data ))
+                .then(response => {
+                    this.users_streaks = response.data
+                    this.requestTime = (new Date().getTime() - requestStart.getTime()) / 1000
+                })
         },
         toggleOrder: function(field) {
             const currentValue = this.order
